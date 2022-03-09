@@ -21,27 +21,12 @@ class MainTapBarViewController: UITabBarController {
     func configure() {
         view.backgroundColor = .systemYellow
         
+        let vc1 = UINavigationController(rootViewController: HomeViewController())
+        let vc2 = UINavigationController(rootViewController: UpcomingViewController())
+        let vc3 = UINavigationController(rootViewController: SearchViewController())
+        let vc4 = UINavigationController(rootViewController: DownloadsViewController())
+        
+        setViewControllers([vc1,vc2,vc3,vc4], animated: true)
+        
     }
 }
-
-
-
-#if DEBUG
-import SwiftUI
-struct ViewControllerRepresentable: UIViewControllerRepresentable {
-    //update
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-    }
-    //makeui
-    @available(iOS 13.0, *)
-    func makeUIViewController(context: Context) -> UIViewController {
-        MainTapBarViewController()
-    }
-}
-struct ViewController_Previews : PreviewProvider {
-    static var previews: some View {
-        ViewControllerRepresentable()
-            .previewDisplayName("미리보기")
-    }
-}
-#endif

@@ -13,10 +13,11 @@ class UpcomingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configures()
     }
     
     //MARK: Configures
-    func coonfigure(){
+    func configures(){
         view.backgroundColor = .systemGreen
     }
 

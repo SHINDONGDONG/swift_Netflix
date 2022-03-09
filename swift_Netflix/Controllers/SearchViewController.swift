@@ -12,11 +12,11 @@ class SearchViewController: UIViewController {
     //MARK: Init
     override func viewDidLoad() {
         super.viewDidLoad()
+        confirue()
 
-        // Do any additional setup after loading the view.
     }
     //MARK: Configures
-    func coonfigure(){
+    func confirue(){
         view.backgroundColor = .systemRed
     }
 

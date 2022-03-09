@@ -14,13 +14,12 @@ class DownloadsViewController: UIViewController {
     //MARK: Init
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        configure()
     }
     
     //MARK: Configures
-    func coonfigure(){
-        view.backgroundColor = .systemPink
+    func configure(){
+        view.backgroundColor = .systemGray
     }
 
 }
