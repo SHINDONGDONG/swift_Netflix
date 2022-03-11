@@ -18,7 +18,7 @@ class UpcomingViewController: UIViewController {
     
     //MARK: Configures
     func configures(){
-        view.backgroundColor = .systemGreen
+        view.backgroundColor = .systemBackground
     }
 
 }

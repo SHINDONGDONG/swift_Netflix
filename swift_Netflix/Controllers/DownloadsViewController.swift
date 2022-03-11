@@ -19,7 +19,7 @@ class DownloadsViewController: UIViewController {
     
     //MARK: Configures
     func configure(){
-        view.backgroundColor = .systemGray
+        view.backgroundColor = .systemBackground
     }
 
 }

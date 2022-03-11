@@ -17,7 +17,7 @@ class SearchViewController: UIViewController {
     }
     //MARK: Configures
     func confirue(){
-        view.backgroundColor = .systemRed
+        view.backgroundColor = .systemBackground
     }
 
 
