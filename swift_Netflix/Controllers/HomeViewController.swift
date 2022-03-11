@@ -13,7 +13,7 @@ class HomeViewController: UIViewController {
 
     //MARK: Properties
     private let homeFeedTable:UITableView = {
-        let table = UITableView()
+        let table = UITableView(frame: .zero, style: UITableView.Style.grouped)
         table.register(CollectionViewTableViewCell.self, forCellReuseIdentifier: CollectionViewTableViewCell.indentfier)
         return table
     }()
@@ -43,8 +43,13 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 20
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
