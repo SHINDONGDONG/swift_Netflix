@@ -35,10 +35,13 @@ class HomeViewController: UIViewController {
     func configures(){
         view.backgroundColor = .systemBackground
         view.addSubview(homeFeedTable)
-        
         homeFeedTable.delegate = self
         homeFeedTable.dataSource = self
         
+        let heroHeaderView = HeroHeaderUIView(
+            frame:CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.width))
+                                              
+        homeFeedTable.tableHeaderView = heroHeaderView
     }
 }
 
