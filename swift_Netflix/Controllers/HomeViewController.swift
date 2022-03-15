@@ -8,11 +8,20 @@
 import UIKit
 
 private let tableCell = "cell"
+
+enum Sections: Int {
+    case TrendingMovies = 0
+    case TrendingTv = 1
+    case Popular = 2
+    case Upcoming = 3
+    case TopRated = 4
+}
+
 class HomeViewController: UIViewController {
 
     //MARK: Properties
     let sectionTitles: [String] = [
-        "Trending Movies","Popular","Trending TV","Upcoming Movies","Top rated"]
+        "Trending Movies","Trending Tv","Popu lar","Upcoming Movies","Top rated"]
 
     private let homeFeedTable:UITableView = {
         let table = UITableView(frame: .zero, style: UITableView.Style.grouped)
@@ -61,9 +70,9 @@ class HomeViewController: UIViewController {
         ]
         //navigationContoller에서 navigaionBar 컬러를 화이트로 다 바꾸어준다.
         navigationController?.navigationBar.tintColor = .white
-        
-        
     }
+    
+    
     
 }
 
@@ -78,7 +87,7 @@ extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
                                          y: header.bounds.origin.y, width: 100, height: header.bounds.height)
         header.textLabel?.textColor = .label
         //header의 텍스트를 row스펠링으로 바꿔줄 수 있다.
-        header.textLabel?.text = header.textLabel?.text?.lowercased()
+        header.textLabel?.text = header.textLabel?.text?.capitalizeFirstLetter()
     }
     
     //tableview에서 title을 표현해주는 기본메서드
@@ -103,6 +112,57 @@ extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
                 CollectionViewTableViewCell else {
                     return UITableViewCell()
                 }
+        
+        switch indexPath.section {
+        case Sections.TrendingMovies.rawValue:
+            APICaller.shared.getTrendingMovies { results in
+                switch results {
+                case .success(let titles):
+                    cell.configures(with: titles)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        case Sections.TrendingTv.rawValue:
+            APICaller.shared.getTrendingTvs { results in
+                switch results {
+                case .success(let titles):
+                    cell.configures(with: titles)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        case Sections.Popular.rawValue:
+            APICaller.shared.getPopular { results in
+                switch results {
+                case .success(let titles):
+                    cell.configures(with: titles)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        case Sections.Upcoming.rawValue:
+            APICaller.shared.getUpcomingMovies { results in
+                switch results {
+                case .success(let titles):
+                    cell.configures(with: titles)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        case Sections.TopRated.rawValue:
+            APICaller.shared.getTopRated{ results in
+                switch results {
+                case .success(let titles):
+                    cell.configures(with: titles)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        default:
+            return UITableViewCell()
+        }
+        
         return cell
     }
     
