@@ -7,11 +7,13 @@
 
 import UIKit
 
-
 private let tableCell = "cell"
 class HomeViewController: UIViewController {
 
     //MARK: Properties
+    let sectionTitles: [String] = [
+        "Trending Movies","Popular","Trending TV","Upcoming Movies","Top rated"]
+
     private let homeFeedTable:UITableView = {
         let table = UITableView(frame: .zero, style: UITableView.Style.grouped)
         table.register(CollectionViewTableViewCell.self, forCellReuseIdentifier: CollectionViewTableViewCell.indentfier)
@@ -42,13 +44,39 @@ class HomeViewController: UIViewController {
             frame:CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.width))
                                               
         homeFeedTable.tableHeaderView = heroHeaderView
+        NavBar()
     }
+    
+    func NavBar() {
+        var image = UIImage(named: "netflixLogo")
+        //이미지를 불러올 때 항상 렌더링이 오리지날 파일로 렌더링해서온다.
+        image = image?.withRenderingMode(.alwaysOriginal)
+        navigationItem.leftBarButtonItem =
+        UIBarButtonItem(image: image, style: .done, target: self, action: nil)
+        
+        //navigationItem 오른쪽에 버튼을 생성
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: UIImage(systemName: "person"), style: .done, target: self, action: nil),
+            UIBarButtonItem(image: UIImage(systemName: "play.rectangle"), style: .done, target: self, action: nil)
+        ]
+        //navigationContoller에서 navigaionBar 컬러를 화이트로 다 바꾸어준다.
+        navigationController?.navigationBar.tintColor = .white
+        
+        
+    }
+    
 }
 
 extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
     
+    
+    //tableview에서 title을 표현해주는 기본메서드
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitles[section]
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 20
+        return sectionTitles.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -73,5 +101,15 @@ extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
+    }
+    
+    //맨 윗부분을 스크롤을 다운시켰을 때 navigation bar가 같이 올라가는 사양으로 만든다.
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        //safearea의 탑을 계산하여 넣고
+        let defaultOffset = view.safeAreaInsets.top
+        //스크롤뷰 컨텐트 offset.y를 + defaultoffset을 넣고
+        let offset = scrollView.contentOffset.y + defaultOffset
+        // navigationController에 transform 으로 initailizing해준다. x축은 0, y는 min(0, -offset)
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }
 }
