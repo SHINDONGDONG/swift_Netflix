@@ -18,6 +18,16 @@ class SearchViewController: UIViewController {
     
     private var titles:[Title] = [Title]()
     
+    //uisearchcontroller를 만들어준다.
+    private let searchController: UISearchController = {
+        //컨트롤러에 controller는 우리가만든 searchresultsviewcontroller를 넣어준다.
+        let controller = UISearchController(searchResultsController: SearchResultsViewController())
+        //search 화면에 placeholder
+        controller.searchBar.placeholder = "Search for a Movie or a TV"
+        controller.searchBar.searchBarStyle = .minimal
+        return controller
+    }()
+    
     //MARK: Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +50,8 @@ class SearchViewController: UIViewController {
         discoverTable.delegate = self
         discoverTable.dataSource = self
         fetchDiscoverMovie()
+        
+        navigationItem.searchController = self.searchController
     }
     
     private func fetchDiscoverMovie() {
