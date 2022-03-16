@@ -17,10 +17,11 @@ class TitleTableViewCell: UITableViewCell {
     private let titlesPosterUIImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
+     
     //타이틀 라벨을 생성
     private let titleLabel:UILabel = {
         let label = UILabel()
@@ -31,7 +32,12 @@ class TitleTableViewCell: UITableViewCell {
     //button을 생성
     private let playTitleButton:UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "play.circle"), for: UIControl.State.normal)
+        //버튼 이미지생성
+        //image에 uiimage 등, withconfirugration에서 심볼컨피그레이션으로 폰트사이즈를 40으로 주어 크기를키운다
+        let image = UIImage(systemName: "play.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 40))
+        button.setImage(image, for: .normal)
+        //버튼의 기본 이미지색상
+        button.tintColor = .label
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
         
@@ -72,8 +78,15 @@ class TitleTableViewCell: UITableViewCell {
             titleLabel.leadingAnchor.constraint(equalTo: titlesPosterUIImageView.trailingAnchor, constant: 20),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ]
+        //button Constraints값 설정
+        let playTitleButtonConstraints = [
+            playTitleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            playTitleButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ]
         NSLayoutConstraint.activate(titlesPosterUIImageViewConstraints)
         NSLayoutConstraint.activate(titleLabelConstraints)
+        //button constraints active활성
+        NSLayoutConstraint.activate(playTitleButtonConstraints)
     }
     
     //TilteViewModel클래스에서 모델을 넘겨받아와 image를 set 해주는 메서드
