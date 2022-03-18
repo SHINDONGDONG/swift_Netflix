@@ -22,6 +22,7 @@ class CollectionViewTableViewCell: UITableViewCell {
         //collectionview를 생성
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         //콜렉션뷰에 레지스터를 등록해준다. collectionviewcell을
+
         collectionView.register(TitleCollectionViewCell.self, forCellWithReuseIdentifier: TitleCollectionViewCell.identifier)
         collectionView.backgroundColor = .systemBackground
         return collectionView

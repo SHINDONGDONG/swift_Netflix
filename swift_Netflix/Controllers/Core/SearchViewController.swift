@@ -45,13 +45,15 @@ class SearchViewController: UIViewController {
         title = "Search"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationItem.largeTitleDisplayMode = .always
-        
+        //naviBar의 cancel을 색상바꿔줌.
+        navigationController?.navigationBar.tintColor = .label
         view.addSubview(discoverTable)
         discoverTable.delegate = self
         discoverTable.dataSource = self
         fetchDiscoverMovie()
         
         navigationItem.searchController = self.searchController
+        searchController.searchResultsUpdater = self
     }
     
     private func fetchDiscoverMovie() {
@@ -90,6 +92,34 @@ extension SearchViewController:UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 140
     }
-    
+}
+
+extension SearchViewController:UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        //updateSearchResults의 searchbar를 선언
+        let searchBar = searchController.searchBar
+        
+        guard let query = searchBar.text,
+              !query.trimmingCharacters(in: .whitespaces).isEmpty,
+              //qeury에 글짜가있는데 count가 3개이상인경우
+              query.trimmingCharacters(in: .whitespaces).count >= 3,
+              let resultsController = searchController.searchResultsController
+                as? SearchResultsViewController else {return}
+        
+        APICaller.shared.search(with: query) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let titles):
+                    print(titles)
+                    resultsController.titles = titles
+                    resultsController.searchResultsCollectionView.reloadData()
+                case .failure(let error):
+                    print(error )
+                }
+            }
+            
+        }
+        
+    }
     
 }

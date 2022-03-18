@@ -38,7 +38,8 @@ class TitleCollectionViewCell: UICollectionViewCell {
     
     //MARK: Configures
     func configures() {
-        backgroundColor = .systemPink
+        backgroundColor = .systemBackground
+        addSubview(posterImageView)
     }
     
     //모델이 가지고있는 각 포스터를 추출해준다.
