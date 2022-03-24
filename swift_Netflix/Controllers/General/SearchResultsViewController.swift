@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol SearchResultsViewControllerDelegate:AnyObject {
+    func searchResultsViewControllerDidTapItem(_ viewModel : TitlePreviewViewModel)
+}
+
 class SearchResultsViewController: UIViewController {
     // MARK: - Properties
+    weak var delegate:SearchResultsViewControllerDelegate?
+    
     public let searchResultsCollectionView: UICollectionView = {
         let  layout = UICollectionViewFlowLayout()
 //        layout.scrollDirection = .vertical
@@ -21,15 +27,6 @@ class SearchResultsViewController: UIViewController {
         return collectionView
     }()
 
-//    public let searchResultsCollectionView: UITableView = {
-//          layout.scrollDirection = .vertical
-//          //기기의 UIScreen의 메인 bounds width를 3으로 나눈 크기
-//          let collectionView = UITableView()
-//        collectionView.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
-//          return collectionView
-//      }()
-
-    
     public var titles: [Title] = [Title]()
     
     
@@ -57,29 +54,23 @@ class SearchResultsViewController: UIViewController {
     }
 
 }
-
-//extension SearchResultsViewController: UITableViewDelegate, UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return titles.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard let cell = searchResultsCollectionView.dequeueReusableCell(
-//            withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else {
-//                return UITableViewCell()
-//            }
-//        let title = titles[indexPath.row]
-//        cell.configure(with: TitleViewModel(
-//            titleName: (title.original_title ?? title.original_name) ?? "Unknown title Name", posterURL: title.poster_path ?? ""))
-//        return cell
-//    }
-//
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 120
-//    }
-//}
- 
 extension SearchResultsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let title = titles[indexPath.row]
+        let titleName = title.title ?? title.name ?? "Unkown"
+        APICaller.shared.getMovei(with: titleName) { result in
+            switch result {
+            case .success(let videoElements):
+                self.delegate?.searchResultsViewControllerDidTapItem(TitlePreviewViewModel(
+                    title: titleName, youtubeView: videoElements, titleOverView: title.overview ?? "unkown"))
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return titles.count
     }

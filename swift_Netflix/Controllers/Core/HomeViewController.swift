@@ -20,6 +20,9 @@ enum Sections: Int {
 class HomeViewController: UIViewController {
 
     //MARK: Properties
+    private var randomTrendingMovie: Title?
+    private var headerView: HeroHeaderUIView?
+    
     let sectionTitles: [String] = [
         "Trending Movies","Trending Tv","Popu lar","Upcoming Movies","Top rated"]
 
@@ -28,7 +31,7 @@ class HomeViewController: UIViewController {
         table.register(CollectionViewTableViewCell.self, forCellReuseIdentifier: CollectionViewTableViewCell.indentfier)
         return table
     }()
-    
+     
     
     //MARK: Init
     override func viewDidLoad() {
@@ -49,13 +52,17 @@ class HomeViewController: UIViewController {
         homeFeedTable.delegate = self
         homeFeedTable.dataSource = self
         
-        let heroHeaderView = HeroHeaderUIView(
+        headerView  = HeroHeaderUIView(
             frame:CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.width))
-                                              
-        homeFeedTable.tableHeaderView = heroHeaderView
+        homeFeedTable.tableHeaderView = headerView
         NavBar()
+        
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureHeroHeaderView()
+    }
     
     func NavBar() {
         var image = UIImage(named: "netflixLogo")
@@ -73,6 +80,24 @@ class HomeViewController: UIViewController {
         navigationController?.navigationBar.tintColor = .white
     }
     
+    private func configureHeroHeaderView() {
+        //api에서 트렌딩 tv를 불러옴 ( 비동기 )
+        APICaller.shared.getTrendingTvs { [ weak self ] result in
+            //리절트에 데이터가 있으면
+            switch result {
+                //타이틀에 넣어준다.
+            case .success(let titles):
+                //랜덤엘리먼트로 랜덤영화를 넣어준다.
+                let randomSelect = titles.randomElement()
+                self?.randomTrendingMovie = randomSelect
+                self?.headerView?.configure(with: TitleViewModel(
+                    titleName: randomSelect?.title ?? "unkown", posterURL: randomSelect?.poster_path ??  "unkown"))
+            case .failure(let error):
+                print(error)
+            }
+            
+        }
+    }
     
     
 }

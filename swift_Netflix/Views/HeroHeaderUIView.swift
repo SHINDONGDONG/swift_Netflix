@@ -9,7 +9,7 @@ import UIKit
 
 class HeroHeaderUIView: UIView {
 
-    //MARK: Properties
+    //MARK: - Properties
     private let  heroImageView:UIImageView = {
         let imageView = UIImageView()
         //정확한 비율로 화면채우기
@@ -53,7 +53,7 @@ class HeroHeaderUIView: UIView {
         return button
     }()
     
-    //MARK: Init
+    //MARK: -Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
@@ -67,7 +67,7 @@ class HeroHeaderUIView: UIView {
         heroImageView.frame = bounds
     }
     
-    //MARK: Configures
+    //MARK: - Configures
     func configure() {
         addSubview(heroImageView)
         addGradient()
@@ -96,6 +96,12 @@ class HeroHeaderUIView: UIView {
         //constranint를 액티브 시켜줌으로 적용시켜준다.
         NSLayoutConstraint.activate(playButtonConstraints)
         NSLayoutConstraint.activate(downloadButtonConstraints)
+    }
+    
+    public func configure(with model: TitleViewModel) {
+        guard let url = URL(string: "https://image.tmdb.org/t/p/w500\(model.posterURL)")
+        else { return }
+        heroImageView.sd_setImage(with: url, completed: nil )
     }
     
     //그라데이션 레이어 메서드
