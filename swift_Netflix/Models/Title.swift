@@ -16,8 +16,8 @@ struct Title: Codable {
 //가지고온 Json파일중 사용할 것들을 model struct에 넣어준다.
     let id: Int
     let media_type: String?
-    let original_name: String?
-    let original_title: String?
+    let name: String?
+    let title: String?
     let poster_path: String?
     let overview: String?
     let vote_count: Int

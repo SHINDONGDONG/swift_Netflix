@@ -56,6 +56,7 @@ class HomeViewController: UIViewController {
         NavBar()
     }
     
+    
     func NavBar() {
         var image = UIImage(named: "netflixLogo")
         //이미지를 불러올 때 항상 렌더링이 오리지날 파일로 렌더링해서온다.
@@ -112,6 +113,8 @@ extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
                 CollectionViewTableViewCell else {
                     return UITableViewCell()
                 }
+        
+        cell.delegate = self
         
         switch indexPath.section {
         case Sections.TrendingMovies.rawValue:
@@ -183,4 +186,21 @@ extension HomeViewController:UITableViewDelegate, UITableViewDataSource {
         // navigationController에 transform 으로 initailizing해준다. x축은 0, y는 min(0, -offset)
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }
+}
+
+extension HomeViewController:CollectionViewTableViewCellDelegate {
+    func collectionViewTableViewCellDidTapCell(_ cell: CollectionViewTableViewCell, viewModel: TitlePreviewViewModel) {
+        //비동기로 작업을 실행
+        DispatchQueue.main.async { [weak self] in
+            //previewcontroller를 저장해주고
+            let vc = TitlePreviewViewController()
+            //preview에 만들어놨던 configure에 viewmodel을 넘겨준다.
+            vc.configure(with: viewModel)
+            //present로 뷰를 넘겨줌.
+            self?.present(vc, animated: true, completion: nil)
+//            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+    
 }

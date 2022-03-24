@@ -7,10 +7,17 @@
 
 import UIKit
 
+//protocol로 데이터를 프리뷰에 넘겨준다
+protocol CollectionViewTableViewCellDelegate:AnyObject {
+    func collectionViewTableViewCellDidTapCell(_ cell: CollectionViewTableViewCell, viewModel: TitlePreviewViewModel)
+}
+
 class CollectionViewTableViewCell: UITableViewCell {
 
     //MARK: Properties
     static let indentfier = "CollectionViewTableViewCell"
+    
+    weak var delegate:CollectionViewTableViewCellDelegate?
     
     private var title: [Title] = [Title]()
     
@@ -69,6 +76,37 @@ class CollectionViewTableViewCell: UITableViewCell {
 
 
 extension CollectionViewTableViewCell:UICollectionViewDelegate,UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        //선택한 title을 빼온다
+        let title = title[indexPath.row]
+        //영화의 title혹은 name을 titlename에 담아주고
+        guard let titleName = title.title ?? title.name else {return}
+        
+        //youtube api의 쿼리로 넘겨준다.                  //실시간 비동기로 표현해야함.
+        APICaller.shared.getMovei(with: titleName + " trailer") { [weak self] results in
+            switch results {
+                //넘어간 쿼리중 맞는 영화가 있으면
+            case .success(let videoElement):
+                //타이틀의 인덱스를 가져와서
+                let title = self?.title[indexPath.row]
+                //title모델의 overview를 가져온다.
+                guard let titleOverView = title?.overview else { return }
+                //자기자신을 리턴하는 상수
+                guard let strongSelf = self else { return }
+                //뷰모델에 현재 인덱스에 대한 titlename과 유튜브에 관한 엘리먼트, 타이틀 오버뷰를 가져온다.
+                let viewModel = TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverView: titleOverView)
+                //이것을 델리게이트로 넘겨준다.
+                self?.delegate?.collectionViewTableViewCellDidTapCell(strongSelf, viewModel: viewModel)
+                
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return title.count
     }
