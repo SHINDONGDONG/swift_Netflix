@@ -73,6 +73,8 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController:UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        discoverTable.deselectRow(at: indexPath, animated: true)
         
         //title에 index 순서대로 넣어준다/
         let title = titles[indexPath.row]

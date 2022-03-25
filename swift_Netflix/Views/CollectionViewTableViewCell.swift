@@ -72,9 +72,23 @@ class CollectionViewTableViewCell: UITableViewCell {
             self?.collectionView.reloadData()
         }
     }
+    
+    private func downloadTitleAt(indexPath: IndexPath) {
+        
+        DataPersistenceManager.shared.downloadTitleWith(model: title[indexPath.row]) { result in
+            switch result {
+            case .success():
+                NotificationCenter.default.post(name: NSNotification.Name("Downloaded"), object: nil)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
 }
 
 
+@available(iOS 15.0, *)
 extension CollectionViewTableViewCell:UICollectionViewDelegate,UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
@@ -128,5 +142,23 @@ extension CollectionViewTableViewCell:UICollectionViewDelegate,UICollectionViewD
         return cell
     }
     
+    //UIActionTap을 사용하여 다운로드 하는 방법
+    //contextMenuConfigureationForItemAt으로 불러온다.
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        
+        //config에 uicontextMenuConfigureation을 담아준다.
+        let config = UIContextMenuConfiguration(
+            //identifier,previewProvider, 등 현재 기능들은 nil로 해주고 그안에
+            identifier: nil,
+            previewProvider: nil) {[weak self] _ in
+                //let downloadaction버튼을 만들어 uiaction을 만들어준다.
+                let downloadAction = UIAction(title: "다운로드", subtitle: "ダウンロード", image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    self?.downloadTitleAt(indexPath: indexPath)
+                }
+                //이후 uimenu를 리터냏주고 그안에 칠드런이 downloadaction이 들어가있다.
+                return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [downloadAction])
+            }
+        return config
+    }
     
 }
